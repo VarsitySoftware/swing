@@ -135,7 +135,7 @@ const Card = (stack, targetElement, prepend) => {
 
             const coordinateX = lastTranslate.coordinateX + event.deltaX;
             const coordinateY = lastTranslate.coordinateY + event.deltaY;
-
+            
             /////////////////////////////////////
             // UPDATED FUNCTION TO RETURN MORE ELEMENTS
             // by JOHN WEAVER ON 2/16/2018
@@ -145,14 +145,13 @@ const Card = (stack, targetElement, prepend) => {
                 coordinateX,
                 coordinateY,
                 targetElement,
-                config.throwOutConfidence(coordinateX, coordinateY, targetElement,
+                config.throwOutConfidence(coordinateX, coordinateY, targetElement),
                 lastTranslate.coordinateX,
                 lastTranslate.coordinateY,
                 event.deltaX,
-                event.deltaY
-                )
+                event.deltaY                
             );
-
+            
             // Not really sure about computing direction here and filtering on directions here.
             // It adds more logic. Any suggestion will be appreciated.
             const direction = computeDirection(coordinateX, coordinateY, config.allowedDirections);
@@ -288,6 +287,11 @@ const Card = (stack, targetElement, prepend) => {
             const coordinateX = lastTranslate.coordinateX + currentX;
             const coordinateY = lastTranslate.coordinateY + currentY;
             const rotation = config.rotation(coordinateX, coordinateY, targetElement, config.maxRotation);
+
+            const lastTranslateCoordinateX = lastTranslate.coordinateX;
+            const lastTranslateCoordinateY = lastTranslate.coordinateY;
+            const eventDeltaX = currentX;
+            const eventDeltaY = currentY;
 
             /////////////////////////////////////
             // UPDATED TRANSFORM FUNCTION TO RETURN MORE ELEMENTS
