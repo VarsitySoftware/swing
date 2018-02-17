@@ -279,7 +279,7 @@ const Card = (stack, targetElement, prepend) => {
       const coordianteY = lastTranslate.coordinateY + currentY;
       const rotation = config.rotation(coordinateX, coordianteY, targetElement, config.maxRotation);
 
-      config.transform(targetElement, coordinateX, coordianteY, rotation);
+      config.transform(targetElement, coordinateX, coordianteY, rotation, currentX, currentY, lastTranslate.coordinateX, lastTranslate.coordinateY);
 
       eventEmitter.trigger('dragmove', {
         offset: coordinateX,
