@@ -136,11 +136,21 @@ const Card = (stack, targetElement, prepend) => {
             const coordinateX = lastTranslate.coordinateX + event.deltaX;
             const coordinateY = lastTranslate.coordinateY + event.deltaY;
 
+            /////////////////////////////////////
+            // UPDATED FUNCTION TO RETURN MORE ELEMENTS
+            // by JOHN WEAVER ON 2/16/2018
+            /////////////////////////////////////
+
             const isThrowOut = config.isThrowOut(
                 coordinateX,
                 coordinateY,
                 targetElement,
-                config.throwOutConfidence(coordinateX, coordinateY, targetElement)
+                config.throwOutConfidence(coordinateX, coordinateY, targetElement,
+                lastTranslate.coordinateX,
+                lastTranslate.coordinateY,
+                event.deltaX,
+                event.deltaY
+                )
             );
 
             // Not really sure about computing direction here and filtering on directions here.
@@ -515,7 +525,12 @@ Card.throwOutConfidence = (xOffset, yOffset, element) => {
  * @param {number} throwOutConfidence config.throwOutConfidence
  * @returns {boolean}
  */
-Card.isThrowOut = (xOffset, yOffset, element, throwOutConfidence) => {
+  /////////////////////////////////////
+  // UPDATED FUNCTION TO RETURN MORE ELEMENTS
+  // by JOHN WEAVER ON 2/16/2018
+  /////////////////////////////////////
+
+Card.isThrowOut = (xOffset, yOffset, element, throwOutConfidence, lastTranslateX, lastTranslateY, deltaX, deltaY) => {
     return throwOutConfidence === 1;
 };
 
