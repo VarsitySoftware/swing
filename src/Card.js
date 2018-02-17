@@ -154,9 +154,55 @@ const Card = (stack, targetElement, prepend) => {
             
             // Not really sure about computing direction here and filtering on directions here.
             // It adds more logic. Any suggestion will be appreciated.
-            const direction = computeDirection(coordinateX, coordinateY, config.allowedDirections);
+            //const direction = computeDirection(coordinateX, coordinateY, config.allowedDirections);
 
-            if (isThrowOut && direction !== Direction.INVALID) {
+            //if (isThrowOut && direction !== Direction.INVALID) {
+                //card.throwOut(coordinateX, coordinateY, direction);
+            //} else {
+                //card.throwIn(coordinateX, coordinateY, direction);
+            //}
+
+            /////////////////////////////////////
+            // IMPROVED DIRECTION FILTER - OLD ONE CAUSED SOME PROBLEMS
+            // by JOHN WEAVER ON 2/16/2018
+            /////////////////////////////////////
+
+            var intThreshold = 10;
+            var direction = null;
+
+            if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+                // CHECK UP/DOWN
+                //console.log("UP/DOWN");
+                if (lastTranslate.coordinateY + event.deltaY < lastTranslate.coordinateY - intThreshold) {
+                    direction = Direction.UP;
+                }
+                else if (lastTranslate.coordinateY + event.deltaY > lastTranslate.coordinateY + intThreshold) {
+                    direction = Direction.DOWN;
+                }
+            }
+            else
+            {
+                // CHECK LEFT/RIGHT
+                //console.log("LEFT/RIGHT");
+                if (lastTranslate.coordinateX + event.deltaX < lastTranslate.coordinateX - intThreshold) {
+                    direction = Direction.LEFT;
+                }
+                else if (lastTranslate.coordinateX + event.deltaX > lastTranslate.coordinateX + intThreshold) {
+                    direction = Direction.RIGHT;
+                }
+            }            
+
+            //console.log(lastTranslate.coordinateY, event.deltaY, coordinateY, direction, isThrowOut);
+            //console.log(lastTranslate.coordinateX, event.deltaX, coordinateX, direction, isThrowOut);
+            console.log(direction, isThrowOut);
+
+            if (direction == null)
+            {
+                console.log('NO DIRECTION - RETURN');
+                return;
+            }
+
+            if (isThrowOut) {
                 card.throwOut(coordinateX, coordinateY, direction);
             } else {
                 card.throwIn(coordinateX, coordinateY, direction);
@@ -257,6 +303,9 @@ const Card = (stack, targetElement, prepend) => {
                 let coordianteY;
                 let directionFactor;
 
+                //console.log(lastThrow.direction);
+                //lastThrow.direction = Direction.RIGHT;
+
                 if (lastThrow.direction === Direction.RIGHT || lastThrow.direction === Direction.LEFT) {
                     directionFactor = lastThrow.direction === Direction.RIGHT ? 1 : -1;
                     coordianteX = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromX, throwOutDistance * directionFactor);
@@ -266,7 +315,7 @@ const Card = (stack, targetElement, prepend) => {
                     coordianteX = lastThrow.fromX;
                     coordianteY = rebound.MathUtil.mapValueInRange(value, 0, 1, lastThrow.fromY, throwOutDistance * directionFactor);
                 }
-
+                                
                 onSpringUpdate(coordianteX, coordianteY);
             }
         });
@@ -288,10 +337,10 @@ const Card = (stack, targetElement, prepend) => {
             const coordinateY = lastTranslate.coordinateY + currentY;
             const rotation = config.rotation(coordinateX, coordinateY, targetElement, config.maxRotation);
 
-            const lastTranslateCoordinateX = lastTranslate.coordinateX;
-            const lastTranslateCoordinateY = lastTranslate.coordinateY;
-            const eventDeltaX = currentX;
-            const eventDeltaY = currentY;
+            //const lastTranslateCoordinateX = lastTranslate.coordinateX;
+            //const lastTranslateCoordinateY = lastTranslate.coordinateY;
+            //const eventDeltaX = currentX;
+            //const eventDeltaY = currentY;
 
             /////////////////////////////////////
             // UPDATED TRANSFORM FUNCTION TO RETURN MORE ELEMENTS
@@ -388,6 +437,7 @@ const Card = (stack, targetElement, prepend) => {
      * @returns {undefined}
      */
     card.throwIn = (coordinateX, coordinateY, direction) => {
+        //console.log("IN", coordinateX, coordinateY, direction)
         throwWhere(Card.THROW_IN, coordinateX, coordinateY, direction);
     };
 
@@ -400,6 +450,7 @@ const Card = (stack, targetElement, prepend) => {
      * @returns {undefined}
      */
     card.throwOut = (coordinateX, coordinateY, direction) => {
+        //console.log("OUT", coordinateX, coordinateY, direction)
         throwWhere(Card.THROW_OUT, coordinateX, coordinateY, direction);
     };
 
