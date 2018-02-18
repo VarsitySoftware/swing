@@ -130,89 +130,77 @@ const Card = (stack, targetElement, prepend) => {
             currentY = event.deltaY;
         });
 
-        eventEmitter.on('panend', (event) => {
-            isDraging = false;
+        eventEmitter.on('panend', function (event) {
+          isDraging = false;
 
-            const coordinateX = lastTranslate.coordinateX + event.deltaX;
-            const coordinateY = lastTranslate.coordinateY + event.deltaY;
-            
-            /////////////////////////////////////
-            // UPDATED FUNCTION TO RETURN MORE ELEMENTS
-            // by JOHN WEAVER ON 2/16/2018
-            /////////////////////////////////////
+          var coordinateX = lastTranslate.coordinateX + event.deltaX;
+          var coordinateY = lastTranslate.coordinateY + event.deltaY;
 
-            const isThrowOut = config.isThrowOut(
-                coordinateX,
-                coordinateY,
-                targetElement,
-                config.throwOutConfidence(coordinateX, coordinateY, targetElement),
-                lastTranslate.coordinateX,
-                lastTranslate.coordinateY,
-                event.deltaX,
-                event.deltaY                
-            );
-            
-            // Not really sure about computing direction here and filtering on directions here.
-            // It adds more logic. Any suggestion will be appreciated.
-            //const direction = computeDirection(coordinateX, coordinateY, config.allowedDirections);
+          //var isThrowOut = config.isThrowOut(coordinateX, coordinateY, targetElement, config.throwOutConfidence(coordinateX, coordinateY, targetElement));
 
-            //if (isThrowOut && direction !== Direction.INVALID) {
-                //card.throwOut(coordinateX, coordinateY, direction);
-            //} else {
-                //card.throwIn(coordinateX, coordinateY, direction);
-            //}
+          var isThrowOut = config.isThrowOut(
+              coordinateX,
+              coordinateY,
+              targetElement,
+              config.throwOutConfidence(coordinateX, coordinateY, targetElement),
+              lastTranslate.coordinateX,
+              lastTranslate.coordinateY,
+              event.deltaX,
+              event.deltaY
+          );
 
-            /////////////////////////////////////
-            // IMPROVED DIRECTION FILTER - OLD ONE CAUSED SOME PROBLEMS
-            // by JOHN WEAVER ON 2/16/2018
-            /////////////////////////////////////
+          // Not really sure about computing direction here and filtering on directions here.
+          // It adds more logic. Any suggestion will be appreciated.
+          //var direction = computeDirection(coordinateX, coordinateY, config.allowedDirections);
 
-            var intThreshold = 10;
-            var direction = null;
+          //if (isThrowOut && direction !== _Direction2.default.INVALID) {
+            //card.throwOut(coordinateX, coordinateY, direction);
+          //} else {
+            //card.throwIn(coordinateX, coordinateY, direction);
+          //}
 
-            if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
-                // CHECK UP/DOWN
-                //console.log("UP/DOWN");
-                if (lastTranslate.coordinateY + event.deltaY < lastTranslate.coordinateY - intThreshold) {
-                    direction = Direction.UP;
-                }
-                else if (lastTranslate.coordinateY + event.deltaY > lastTranslate.coordinateY + intThreshold) {
-                    direction = Direction.DOWN;
-                }
-            }
-            else
-            {
-                // CHECK LEFT/RIGHT
-                //console.log("LEFT/RIGHT");
-                if (lastTranslate.coordinateX + event.deltaX < lastTranslate.coordinateX - intThreshold) {
-                    direction = Direction.LEFT;
-                }
-                else if (lastTranslate.coordinateX + event.deltaX > lastTranslate.coordinateX + intThreshold) {
-                    direction = Direction.RIGHT;
-                }
-            }            
+          /////////////////////////////////////
+          // IMPROVED DIRECTION FILTER - OLD ONE CAUSED SOME PROBLEMS
+          // by JOHN WEAVER ON 2/16/2018
+          /////////////////////////////////////
 
-            //console.log(lastTranslate.coordinateY, event.deltaY, coordinateY, direction, isThrowOut);
-            //console.log(lastTranslate.coordinateX, event.deltaX, coordinateX, direction, isThrowOut);
-            console.log(direction, isThrowOut);
+          var intThreshold = 10;
+          var direction = null;
 
-            if (direction == null)
-            {
-                console.log('NO DIRECTION - RETURN');
-                return;
-            }
+          if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+              // CHECK UP/DOWN          
+              if (lastTranslate.coordinateY + event.deltaY < lastTranslate.coordinateY - intThreshold) {
+                  direction = _Direction2.default.UP;
+              }
+              else if (lastTranslate.coordinateY + event.deltaY > lastTranslate.coordinateY + intThreshold) {
+                  direction = _Direction2.default.DOWN;
+              }
+          }
+          else {
+              // CHECK LEFT/RIGHT          
+              if (lastTranslate.coordinateX + event.deltaX < lastTranslate.coordinateX - intThreshold) {
+                  direction = _Direction2.default.LEFT;
+              }
+              else if (lastTranslate.coordinateX + event.deltaX > lastTranslate.coordinateX + intThreshold) {
+                  direction = _Direction2.default.RIGHT;
+              }
+          }
 
-            if (isThrowOut) {
-                card.throwOut(coordinateX, coordinateY, direction);
-            } else {
-                card.throwIn(coordinateX, coordinateY, direction);
-            }
+          if (direction == null) {
+              console.log('NO DIRECTION - RETURN');
+              return;
+          }
 
-            eventEmitter.trigger('dragend', {
-                target: targetElement
-            });
+          if (isThrowOut) {
+              card.throwOut(coordinateX, coordinateY, direction);
+          } else {
+              card.throwIn(coordinateX, coordinateY, direction);
+          }
+
+          eventEmitter.trigger('dragend', {
+            target: targetElement
+          });
         });
-
         // "mousedown" event fires late on touch enabled devices, thus listening
         // to the touchstart event for touch enabled devices and mousedown otherwise.
         if (isTouchDevice()) {
@@ -333,29 +321,24 @@ const Card = (stack, targetElement, prepend) => {
             lastX = currentX;
             lastY = currentY;
 
-            const coordinateX = lastTranslate.coordinateX + currentX;
-            const coordinateY = lastTranslate.coordinateY + currentY;
-            const rotation = config.rotation(coordinateX, coordinateY, targetElement, config.maxRotation);
-
-            //const lastTranslateCoordinateX = lastTranslate.coordinateX;
-            //const lastTranslateCoordinateY = lastTranslate.coordinateY;
-            //const eventDeltaX = currentX;
-            //const eventDeltaY = currentY;
+            var coordinateX = lastTranslate.coordinateX + currentX;
+            var coordinateY = lastTranslate.coordinateY + currentY;
+            var rotation = config.rotation(coordinateX, coordinateY, targetElement, config.maxRotation);
 
             /////////////////////////////////////
             // UPDATED TRANSFORM FUNCTION TO RETURN MORE ELEMENTS
             // by JOHN WEAVER ON 2/16/2018
+            // config.transform(targetElement, coordinateX, coordianteY, rotation);
             /////////////////////////////////////
 
             config.transform(targetElement, coordinateX, coordinateY, rotation, currentX, currentY, lastTranslate.coordinateX, lastTranslate.coordinateY);
-
-            eventEmitter.trigger('dragmove', {
-                offset: coordinateX,
-                target: targetElement,
-                throwDirection: computeDirection(coordinateX, coordinateY, config.allowedDirections),
-                throwOutConfidence: config.throwOutConfidence(coordinateX, coordinateY, targetElement)
-            });
-        };
+                  eventEmitter.trigger('dragmove', {
+                      offset: coordinateX,
+                      target: targetElement,
+                      throwDirection: computeDirection(coordinateX, coordinateY, config.allowedDirections),
+                      throwOutConfidence: config.throwOutConfidence(coordinateX, coordinateY, targetElement)
+                  });
+              };
 
         /**
          * Invoked every time the physics solver updates the Spring's value.
@@ -375,9 +358,8 @@ const Card = (stack, targetElement, prepend) => {
             // by JOHN WEAVER ON 2/16/2018
             //config.transform(targetElement, coordinateX, coordinateY, rotation);
             /////////////////////////////////////
-            
-            config.transform(targetElement, coordinateX, coordinateY, rotation, currentX, currentY, lastTranslate.coordinateX, lastTranslate.coordinateY);
 
+            config.transform(targetElement, coordinateX, coordinateY, rotation, currentX, currentY, lastTranslate.coordinateX, lastTranslate.coordinateY);
         };
 
         /**
@@ -580,12 +562,8 @@ Card.throwOutConfidence = (xOffset, yOffset, element) => {
  * @param {number} throwOutConfidence config.throwOutConfidence
  * @returns {boolean}
  */
-  /////////////////////////////////////
-  // UPDATED FUNCTION TO RETURN MORE ELEMENTS
-  // by JOHN WEAVER ON 2/16/2018
-  /////////////////////////////////////
 
-Card.isThrowOut = (xOffset, yOffset, element, throwOutConfidence, lastTranslateX, lastTranslateY, deltaX, deltaY) => {
+Card.isThrowOut = function (xOffset, yOffset, element, throwOutConfidence) {
     return throwOutConfidence === 1;
 };
 
